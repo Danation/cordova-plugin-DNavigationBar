@@ -1,5 +1,5 @@
 (function (cordova) {
-    cordova.define("DNavigationBar",
+    cordova.define("cordova-plugin-DNavigationBar",
         function (require, exports, module) {
             var exec = require("cordova/exec");
 
