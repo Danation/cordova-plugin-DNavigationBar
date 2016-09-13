@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
+        id="cordova-plugin-DNavigationBar" version="1.0.0">
+    <name>DNavigationBar</name>
+    <description>Navigation Bar Plugin</description>
+    <license>MIT License</license>
+    <keywords>cordova,ios,navigation,bar</keywords>
+    <js-module src="www/DNavigationBar.js" name="DNavigationBar"></js-module>
+    <platform name="ios">
+        <config-file target="config.xml" parent="/*">
+            <feature name="DNavigationBar">
+                <param name="ios-package" onload="true" value="DNavigationBar"/>
+            </feature>
+        </config-file>
+        <source-file src="src/DNavigationBar.swift" />
+        <resource-file src="src/DNavigationBar.xib" />
+    </platform>
+</plugin>
