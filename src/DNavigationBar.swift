@@ -7,7 +7,11 @@ import WebKit
     // Note: These initializers actually don't do anything.  They need to be initialized again in create() *shrug*
     var navBarController = DNavigationBarController()
     var statusBarHeight:CGFloat = 0
+    var homeUrl = ""
     
+    override public func pluginInitialize() {
+        homeUrl = commandDelegate.settings["homeurl"] as! String;
+    }
     
     /*!
     * Creates the Navigation bar.
@@ -103,7 +107,7 @@ import WebKit
     * Event handler for the home button
     */
     public func homeButtonTapped() {
-        let request = NSURLRequest(URL: NSURL(string: BASE_URL)!)
+        let request = NSURLRequest(URL: NSURL(string: self.homeUrl)!)
         
         if (self.webView is UIWebView) {
             (self.webView as! UIWebView).loadRequest(request)
