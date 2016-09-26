@@ -17,6 +17,7 @@ import WebKit
     * Creates the Navigation bar.
     * \param command Contains the tint color at index 0
     */
+    @objc(create:)
     func create(command : CDVInvokedUrlCommand) {
         navBarController = DNavigationBarController()
         statusBarHeight = 20
@@ -24,33 +25,33 @@ import WebKit
         let navBar = navBarController.view as! UINavigationBar
         
         // Set up navigation bar
-        navBar.titleTextAttributes = [NSFontAttributeName : UIFont.boldSystemFontOfSize(16)]
+        navBar.titleTextAttributes = [NSFontAttributeName : UIFont.boldSystemFont(ofSize: 16)]
         
         // Set tint color
-        if let tint = command.arguments[0] as? String {
-            navBar.tintColor = colorStringToColor(tint)
+        if let tint = command.arguments[0] as? NSString {
+            navBar.tintColor = colorStringToColor(input: tint)
         }
         
         navBar.frame.origin.y = statusBarHeight
-        navBar.hidden = true
+        navBar.isHidden = true
         
         // Add navigation bar to the web view
         
         self.webView?.superview!.addSubview(navBarController.view)
         
         // Add back button
-        let backButton = UIBarButtonItem(title: "Back", style: UIBarButtonItemStyle.Plain, target: self, action: "backButtonTapped")
+        let backButton = UIBarButtonItem(title: "Back", style: UIBarButtonItemStyle.plain, target: self, action: #selector(DNavigationBarDelegate.backButtonTapped))
         navBarController.navItem.leftBarButtonItem = backButton
         navBarController.backButton = backButton
         
         // Add home button
-        let homeButton = UIBarButtonItem(title: "Home", style: UIBarButtonItemStyle.Plain, target: self, action: "homeButtonTapped")
+        let homeButton = UIBarButtonItem(title: "Home", style: UIBarButtonItemStyle.plain, target: self, action: #selector(DNavigationBarDelegate.homeButtonTapped))
         navBarController.navItem.rightBarButtonItem = homeButton
         navBarController.homeButton = homeButton
     }
     
     func colorStringToColor(input : NSString) -> UIColor {
-        let stringComponents = input.componentsSeparatedByString(",")
+        let stringComponents = input.components(separatedBy: ",")
         
         // String to CGFloat conversion
         let cgfloatComponents = stringComponents.map {
@@ -67,13 +68,14 @@ import WebKit
     * Shows/Hides the Back button
     * \param command The visibiliy is at index 0
     */
+    @objc(setBackButtonVisible:)
     func setBackButtonVisible(command : CDVInvokedUrlCommand) {
         let shouldShow = command.arguments[0] as! Bool
         if shouldShow {
-            navBarController.navItem.setLeftBarButtonItem(navBarController.backButton, animated: false)
+            navBarController.navItem.setLeftBarButton(navBarController.backButton, animated: false)
         }
         else {
-            navBarController.navItem.setLeftBarButtonItem(nil, animated: false)
+            navBarController.navItem.setLeftBarButton(nil, animated: false)
         }
     }
     
@@ -81,13 +83,14 @@ import WebKit
     * Shows/Hides the Home button
     * \param command The visibiliy is at index 0
     */
+    @objc(setHomeButtonVisible:)
     func setHomeButtonVisible(command : CDVInvokedUrlCommand) {
         let shouldShow = command.arguments[0] as! Bool
         if shouldShow {
-            navBarController.navItem.setRightBarButtonItem(navBarController.homeButton, animated: false)
+            navBarController.navItem.setRightBarButton(navBarController.homeButton, animated: false)
         }
         else {
-            navBarController.navItem.setRightBarButtonItem(nil, animated: false)
+            navBarController.navItem.setRightBarButton(nil, animated: false)
         }
     }
     
@@ -107,13 +110,13 @@ import WebKit
     * Event handler for the home button
     */
     public func homeButtonTapped() {
-        let request = NSURLRequest(URL: NSURL(string: self.homeUrl)!)
+        let request = NSURLRequest(url: NSURL(string: self.homeUrl)! as URL)
         
         if (self.webView is UIWebView) {
-            (self.webView as! UIWebView).loadRequest(request)
+            (self.webView as! UIWebView).loadRequest(request as URLRequest)
         }
         else {
-            (self.webView as! WKWebView).loadRequest(request)
+            (self.webView as! WKWebView).load(request as URLRequest)
         }
     }
     
@@ -121,16 +124,18 @@ import WebKit
     * Shows/Hides the whole navigation bar
     * \param command The visibiliy is at index 0
     */
+    @objc(setVisible:)
     func setVisible(command : CDVInvokedUrlCommand) {
         let shouldShow = command.arguments[0] as! Bool
         let navBar = navBarController.view as! UINavigationBar
-        navBar.hidden = !shouldShow
+        navBar.isHidden = !shouldShow
     }
     
     /*!
     * Sets the title of the navigation bar
     * \param command The title is at index 0
     */
+    @objc(setTitle:)
     func setTitle(command : CDVInvokedUrlCommand) {
         let title = command.arguments[0] as! String
         navBarController.navItem.title = title
